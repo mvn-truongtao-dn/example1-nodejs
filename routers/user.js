@@ -4,6 +4,10 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+router.get("/users", async (req, res) => {
+  res.json(req.user);
+});
+
 router.get("/users/me", auth, async (req, res) => {
   res.json(req.user);
 });
