@@ -5,7 +5,20 @@ const User = require("../models/User");
 const router = express.Router();
 
 router.get("/users", async (req, res) => {
-  res.json(req.user);
+  User.find()
+    .then((allUsers) => {
+      return res.status(200).json({
+        success: true,
+        message: "A list of all Users",
+        Users: allUsers,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: "Server error. Please try again.",
+      });
+    });
 });
 
 router.get("/users/me", auth, async (req, res) => {
