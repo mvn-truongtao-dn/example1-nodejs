@@ -1,5 +1,8 @@
 const express = require("express");
 const userRouter = require("./routers/user");
+var AccessToken = require("twilio").jwt.AccessToken;
+var VideoGrant = AccessToken.VideoGrant;
+
 var cors = require("cors");
 
 require("dotenv").config();
