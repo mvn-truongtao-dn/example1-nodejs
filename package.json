@@ -17,8 +17,10 @@
     "faker": "^6.6.6",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.9.0",
+    "node-dev": "^8.0.0",
     "nodemon": "^2.0.20",
     "twilio": "^3.84.1",
+    "uuid": "^9.0.0",
     "validator": "^13.7.0"
   }
 }

@@ -3,6 +3,14 @@ var AccessToken = require("twilio").jwt.AccessToken;
 var VideoGrant = AccessToken.VideoGrant;
 const auth = require("../middleware/auth");
 const User = require("../models/User");
+const { v4: uuidv4 } = require("uuid");
+require("dotenv").config();
+
+const twilioClient = require("twilio")(
+  process.env.TWILIO_API_KEY,
+  process.env.TWILIO_API_SECRET,
+  { accountSid: process.env.TWILIO_ACCOUNT_SID }
+);
 
 const router = express.Router();
 
@@ -68,17 +76,20 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-const twilioClient = require("twilio")(
-  process.env.TWILIO_API_KEY,
-  process.env.TWILIO_API_SECRET,
-  { accountSid: process.env.TWILIO_ACCOUNT_SID }
-);
-
 const findOrCreateRoom = async (roomName) => {
   try {
     // see if the room exists already. If it doesn't, this will throw
     // error 20404.
     await twilioClient.video.rooms(roomName).fetch();
+    console.log(
+      await twilioClient.video.v1.rooms
+        .list({
+          status: "completed",
+          uniqueName: "DailyStandup",
+          limit: 20,
+        })
+        .then((rooms) => rooms.forEach((r) => console.log(r.sid)))
+    );
   } catch (error) {
     // the room was not found, so create it
     if (error.code == 20404) {
@@ -113,7 +124,7 @@ const getAccessToken = (roomName) => {
   return token.toJwt();
 };
 
-app.post("/join-room", async (req, res) => {
+router.post("/join-room", async (req, res) => {
   // return 400 if the request has an empty body or no roomName
   if (!req.body || !req.body.roomName) {
     return res.status(400).send("Must include roomName argument.");
